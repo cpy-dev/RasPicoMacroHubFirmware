@@ -1,0 +1,163 @@
+è il caso che i tasti relativi au due mouse non vengano toccati,
+quindi evitate anche di modificarli nella mappa
+
+per configurare i tasti del macropad basta scrivere la funzione per l'azione che volete,
+inserirla nella mappa, e il gioco è fatto
+
+cosa si può fare:
+    - si può scrivere cose, usando la funzione write(),
+      passando come parametro la stringa da scrivere
+        - la funzione write accetta anche dei tasti modificatori,
+          che saranno tenuti premuti mentre viene scritta la stringa,
+          i modificatori vanno passati in una tupla, che deve essere assegnata al
+          parametro nominale "hold"
+
+          Esempio:
+            write('vaffanculo', hold=(K.SHIFT,))
+
+    - si può lanciare dei keystroke specifici, con o senza modificatori
+        - in questi casi potete anche fare uso della magica hashmap dei tasti
+          che ho scritto, che però non contiene i tasti modificatori, o i tasti F
+
+    - si può eseguire una qualunque funzione interna al Pico, che però a voi non serve
+
+allego qua sotto tutti i vari keycodes che possono essere lanciati,
+basta passarli come parametri alla funzione click(), in una tupla
+    - anche click accetta tasti modificatori da tenere premuti,
+      e anche in questo casa basta passarli in una tupla al parametro nominale hold
+
+Esempio:
+
+click((K.F1,), hold=(K.GUI,))
+
+Keycodes:
+
+K.C
+K.M
+K.A
+K.B
+K.D
+K.E
+K.F
+K.G
+K.H
+K.I
+K.J
+K.K
+K.L
+K.N
+K.O
+K.P
+K.Q
+K.R
+K.S
+K.T
+K.U
+K.V
+K.W
+K.X
+K.Y
+K.Z
+K.ONE
+K.TWO
+K.THREE
+K.FOUR
+K.FIVE
+K.SIX
+K.SEVEN
+K.EIGHT
+K.NINE
+K.ZERO
+K.ENTER
+K.RETURN
+K.ESCAPE
+K.BACKSPACE
+K.TAB
+K.SPACEBAR
+K.SPACE
+K.MINUS
+K.EQUALS
+K.LEFT_BRACKET
+K.RIGHT_BRACKET
+K.BACKSLASH
+K.POUND
+K.SEMICOLON
+K.QUOTE
+K.GRAVE_ACCENT
+K.COMMA
+K.PERIOD
+K.FORWARD_SLASH
+K.CAPS_LOCK
+K.F1
+K.F2
+K.F3
+K.F4
+K.F5
+K.F6
+K.F7
+K.F8
+K.F9
+K.F10
+K.F11
+K.F12
+K.PRINT_SCREEN
+K.SCROLL_LOCK
+K.PAUSE
+K.INSERT
+K.HOME
+K.PAGE_UP
+K.DELETE
+K.END
+K.PAGE_DOWN
+K.RIGHT_ARROW
+K.LEFT_ARROW
+K.DOWN_ARROW
+K.UP_ARROW
+K.KEYPAD_NUMLOCK
+K.KEYPAD_FORWARD_SLASH
+K.KEYPAD_ASTERISK
+K.KEYPAD_MINUS
+K.KEYPAD_PLUS
+K.KEYPAD_ENTER
+K.KEYPAD_ONE
+K.KEYPAD_TWO
+K.KEYPAD_THREE
+K.KEYPAD_FOUR
+K.KEYPAD_FIVE
+K.KEYPAD_SIX
+K.KEYPAD_SEVEN
+K.KEYPAD_EIGHT
+K.KEYPAD_NINE
+K.KEYPAD_ZERO
+K.KEYPAD_PERIOD
+K.KEYPAD_BACKSLASH
+K.APPLICATION
+K.POWER
+K.KEYPAD_EQUALS
+K.F13
+K.F14
+K.F15
+K.F16
+K.F17
+K.F18
+K.F19
+K.F20
+K.F21
+K.F22
+K.F23
+K.F24
+K.LEFT_CONTROL
+K.CONTROL
+K.LEFT_SHIFT
+K.SHIFT
+K.LEFT_ALT
+K.ALT
+K.OPTION
+K.LEFT_GUI
+K.GUI
+K.WINDOWS
+K.COMMAND
+K.RIGHT_CONTROL
+K.RIGHT_SHIFT
+K.RIGHT_ALT
+K.RIGHT_GUI
