@@ -21,6 +21,9 @@ cosa si può fare:
 
     - si può eseguire una qualunque funzione interna al Pico, che però a voi non serve
 
+per avere più layer sul macropad, basta rendere "trasparente" un tasto, quindi usarlo solo come modificatore,
+e inserire un condizionale di verifica sul suo valore nelle funzioni associate ai tasti su cui fare agire il multilayer
+
 allego qua sotto tutti i vari keycodes che possono essere lanciati,
 basta passarli come parametri alla funzione click(), in una tupla
     - anche click accetta tasti modificatori da tenere premuti,
