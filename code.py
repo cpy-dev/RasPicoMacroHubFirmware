@@ -118,7 +118,7 @@ keys = {
     ',' : lambda : [keyboard.press(K.COMMA), keyboard.release(K.COMMA)],
     '-' : lambda : [keyboard.press(K.MINUS), keyboard.release(K.MINUS)],
     '.' : lambda : [keyboard.press(K.DOT), keyboard.release(K.DOT)],
-    '/' : lambda : [keyboard.press(K.FORWARDSLASH), keyboard.release(K.FORWARDSLASH)],
+    '/' : lambda : [keyboard.press(K.FORWARD_SLASH), keyboard.release(K.FORWARD_SLASH)],
     '0' : lambda : [keyboard.press(K.ZERO), keyboard.release(K.ZERO)],
     '1' : lambda : [keyboard.press(K.ONE), keyboard.release(K.ONE)],
     '2' : lambda : [keyboard.press(K.TWO), keyboard.release(K.TWO)],
