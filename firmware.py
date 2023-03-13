@@ -9,8 +9,7 @@ class LayerSwitch:
     def __init__(self, layerIndex):
         self.layer = layerIndex
 
-def write(string, hold=None):
-    
+
         
 class Keyboard:
     def __init__(self, direct=True):
@@ -31,6 +30,15 @@ class Keyboard:
     def setMap(self, map):
         self.map = map
         
+    def write(self, string, hold=None):
+        if hold is not None:
+            for holding in hold:
+                self.keyboard.press(holding)
+                
+         for char in string:
+            if char in keys:
+                self.keyboard.write(chars[char])
+
     def run(self):
         while True:
             if self.direct:
