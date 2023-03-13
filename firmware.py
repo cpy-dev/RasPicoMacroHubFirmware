@@ -32,6 +32,11 @@ class Keyboard:
         self.map = map
         
     def run(self):
-        pass
+        while True:
+            if self.direct:
+                for index, button in enumerate(self.pin):
+                    if button.value:
+                        fnc = self.map[index]
+                        fmc()
          
         
