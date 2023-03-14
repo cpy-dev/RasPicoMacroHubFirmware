@@ -4,12 +4,13 @@ import digitalio
 import analogio
 from adafruit_hid.keybaord import Keyboard
 from adafruit_hid.keycode import Keycode
+import time
 
 class LayerSwitch:
     def __init__(self, layerIndex):
         self.layer = layerIndex
 
-class Key:    
+class __Key:    
     C = K.C
     M = K.M
     A = K.A
@@ -143,7 +144,7 @@ class Key:
     def __init__(self):
         pass
 
-Key = Key()
+Key = __Key()
     
 chars = {
     ' ' : lambda : (keyboard)[keyboard.press(K.SPACE), keyboard.release(K.SPACE)],
@@ -248,10 +249,13 @@ class Keyboard:
     CR = 2
     def __init__(self, direct=True):
         self.direct = direct
+        
         self.rows = []
         self.cols = []
+        
         self.pins = []
         self.map = []
+        
         self.keyboard = Keyboard(usb_hid.devices)
         self.direction = None
         
@@ -261,6 +265,7 @@ class Keyboard:
     def pins(self, pins):
         if self.direct:
             self.pins = pins
+        
         else:
             self.rows = pins[0]
             self.cols = pins[1]
@@ -277,6 +282,7 @@ class Keyboard:
             try:
                 self.keyboard.press(key)
                 self.keyboard.release(key)
+            
             except:
                 pass
         
@@ -299,55 +305,95 @@ class Keyboard:
     
     def run(self):
         layer = 0
+        lastAction = None
+        lastTime = time.time()
+        
         while True:
             if self.direct:
+                
                 for index, button in enumerate(self.pin):
                     if isinstance(self.map[index], LayerSwitch):
+                        
                         if button.value:
                             layer = button.layer
+                        
                         else:
                             layer = 0
+                    
                     else:
                         if button.value:
                             fnc = self.map[index] if not layer else (self.map[index])[layer]
+                    
+                            if fnc == lastAction and time.time() - lastTime < 0.01:
+                                contine
+                            
                             if isinstance(fnc, str):
                                 self.write(fnc)
+                            
                             elif isisnstance(fnc, Keycode):
                                 self.click(fnc)
+                            
                             else:
                                 try: fnc()
                                 except: pass
+                            
+                            lastAction = fnc
+                            lastTime = time.time()
                                 
             elif self.direction == self.RC:
                 index = 0
+                
                 for row in self.rows:
                     row.value = True
+                    
                     for col in self.cols:
                         if col.value:
                             fnc = self.map[index] if not layer else (self.map[index])[layer]
+                            
+                            if fnc == lastAction and time.time() - lastTime < 0.01:
+                                contine
+                            
                             if isinstance(fnc, str):
                                 self.write(fnc)
+                            
                             elif isisnstance(fnc, Keycode):
                                 self.click(fnc)
+                            
                             else:
                                 try: fnc()
                                 except: pass
+                            
+                            lastAction = fnc
+                            lastTime = time.time()
+                        
                         index += 1
                     row.value = False
                     
             elif self.direction == self.CR:
                 index = 0
+                
                 for col in self.cols:
                     col.value = True
+                    
                     for row in self.rows:
                         if row.value:
                             fnc = self.map[index] if not layer else (self.map[index])[layer]
+                            
+                            if fnc == lastAction and time.time() - lastTime < 0.01:
+                                contine
+                            
                             if isinstance(fnc, str):
                                 self.write(fnc)
+                            
                             elif isisnstance(fnc, Keycode):
                                 self.click(fnc)
+                            
                             else:
                                 try: fnc()
                                 except: pass
+                            
+                            lastAction = fnc
+                            lastTime = time.time()
+                        
                         index += 1
                     col.value = False
