@@ -235,58 +235,59 @@ def click(keycodes, hold=None):
 jsStep = 2          # step di movimento del joystick
 precisionStep = 4   # step di movimento del mouse di precisione
 
+class Action:
+    def __init__(self, device, onClick):
+        self.device = device
+        self.onClick = onClick
+        
+class LayerAction:
+    def __init__(self, device, onPress, onRelease):
+        self.device = device
+        self.onPress = onPress
+        self.onRelease = onRelease
+        self.active = False
+
 map = [
-    (left, lambda : [mouse.click(mouse.LEFT_BUTTON)]),
-    (right, lambda : [mouse.click(mouse.RIGHT_BUTTON)]),
-    (moveUp, lambda : [mouse.move(0, -precisionStep)]),
-    (moveDown, lambda : [mouse.move(0, precisionStep)]),
-    (moveLeft, lambda : [mouse.move(-precisionStep, 0)]),
-    (moveRight, lambda : [mouse.move(precisionStep, 0)]),
-    (joyStickLeft, lambda : [mouse.click(mouse.RIGHT_BUTTON)]),
-    (joyStickRight, lambda : [mouse.click(mouse.MIDDLE_BUTTON)]),
-    (joyStickIntegrated, lambda : [mouse.click(mouse.LEFT_BUTTON)])
-    (macro11, lambda: []),
-    (macro12, lambda: []),
-    (macro13, lambda: []),
-    (macro14, lambda: []),
-    (macro21, lambda: []),
-    (macro22, lambda: []),
-    (macro23, lambda: []),
-    (macro24, lambda: []),
-    (macro31, lambda: []),
-    (macro32, lambda: []),
-    (macro33, lambda: []),
-    (macro34, lambda: []),
+    LayerAction(left, lambda : [mouse.press(mouse.LEFT_BUTTON)], lambda: [mouse.release(mouse.LEFT_BUTTON)]),
+    LayerAction(right, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
+    Action(moveUp, lambda : [mouse.move(0, -precisionStep)]),
+    Action(moveDown, lambda : [mouse.move(0, precisionStep)]),
+    Action(moveLeft, lambda : [mouse.move(-precisionStep, 0)]),
+    Action(moveRight, lambda : [mouse.move(precisionStep, 0)]),
+    LayerAction(joyStickLeft, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
+    LayerAction(joyStickRight, lambda : [mouse.press(mouse.MIDDLE_BUTTON)], lambda : [mouse.release(mouse.MIDDLE_BUTTON)]),
+    LayerAction(joyStickIntegrated, lambda : [mouse.press(mouse.LEFT_BUTTON)], mouse.release(mouse.LEFT_BUTTON)),
+    Action(macro11, lambda: []),
+    Action(macro12, lambda: []),
+    Action(macro13, lambda: []),
+    Action(macro14, lambda: []),
+    Action(macro21, lambda: []),
+    Action(macro22, lambda: []),
+    Action(macro23, lambda: []),
+    Action(macro24, lambda: []),
+    Action(macro31, lambda: []),
+    Action(macro32, lambda: []),
+    Action(macro33, lambda: []),
+    Action(macro34, lambda: []),
 ]
 
 if __name__ == '__main__':
-    leftPressed = False
-    rightPressed = False
-    centerPressed = False
-    
     while True:
-        if left.value or joyStickIntegrated.value:
-            mouse.press(mouse.LEFT_BUTTON)
-            leftPressed = TRUE
-        elif not left.value and not joystick integrated.value and leftPressed:
-            mouse.release(mouse.LEFT_BUTTON)
-            leftPressed = False
-        elif right.value or joyStickLeft.value:
-            mouse.press(mouse.RIGHT_BUTTON)
-            rightPressed = True
-        elif not right.value and not joyStickLeft.value and rightPressed:
-            mouse.release(mouse.RIGHT_BUTTON)
-            rightPressed = False
-        elif joyStickRight.value:
-            mouse.press(mouse.MIDDLE_BUTTON)
-            centerPressed = True
-        elif not joystickRight.value and centerPressed:
-            mouse.release(mouse.MIDDLE_BUTTON)
-            centerPressed = False
-        
-        for dev, action in map:
-            if dev.value: action()
-
+        for action in map:
+            if isinstance(action, Action):
+                if action.device.value:
+                    action.onPress()
+            
+            else:
+                if action.device.value and not action.value:
+                    action.onPress()
+                    action.value = True
+                
+                else:
+                    if action.value:
+                        action.onRelease()
+                        action.value = False
+                        
         x = round(fix(xaxis))
         y = round(fix(yaxis))
 
