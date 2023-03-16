@@ -242,9 +242,9 @@ map = [
     (moveDown, lambda : [mouse.move(0, precisionStep)]),
     (moveLeft, lambda : [mouse.move(-precisionStep, 0)]),
     (moveRight, lambda : [mouse.move(precisionStep, 0)]),
-    (joyStickLeft, lambda : [mouse.click(mouse.LEFT_BUTTON)]),
-    (joyStickRight, lambda : [mouse.click(mouse.RIGHT_BUTTON)]),
-    (joyStickIntegrated, lambda : [mouse.click(mouse.MIDDLE_BUTTON)])
+    (joyStickLeft, lambda : [mouse.click(mouse.RIGHT_BUTTON)]),
+    (joyStickRight, lambda : [mouse.click(mouse.MIDDLE_BUTTON)]),
+    (joyStickIntegrated, lambda : [mouse.click(mouse.LEFT_BUTTON)])
     (macro11, lambda: []),
     (macro12, lambda: []),
     (macro13, lambda: []),
@@ -260,7 +260,30 @@ map = [
 ]
 
 if __name__ == '__main__':
+    leftPressed = False
+    rightPressed = False
+    centerPressed = False
+    
     while True:
+        if left.value or joyStickIntegrated.value:
+            mouse.press(mouse.LEFT_BUTTON)
+            leftPressed = TRUE
+        elif not left.value and not joystick integrated.value and leftPressed:
+            mouse.release(mouse.LEFT_BUTTON)
+            leftPressed = False
+        elif right.value or joyStickLeft.value:
+            mouse.press(mouse.RIGHT_BUTTON)
+            rightPressed = True
+        elif not right.value and not joyStickLeft.value and rightPressed:
+            mouse.release(mouse.RIGHT_BUTTON)
+            rightPressed = False
+        elif joyStickRight.value:
+            mouse.press(mouse.MIDDLE_BUTTON)
+            centerPressed = True
+        elif not joystickRight.value and centerPressed:
+            mouse.release(mouse.MIDDLE_BUTTON)
+            centerPressed = False
+        
         for dev, action in map:
             if dev.value: action()
 
