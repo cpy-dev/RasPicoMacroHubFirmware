@@ -9,12 +9,15 @@ from adafruit_hid.keyboard import Keycode as K
 ############# BASE OBJACTS DEFINITION ############
 # porcoddio non toccare questi codici #
 
+# mouse and keyboard instance for initialisation
 mouse = Mouse(usb_hid.devices)
 keyboard = Keyboard(usb_hid.devices)
 
-xaxis = analogio.AnalogIn(board.GPA0)
-yaxis = analogio.AnalogIn(board.GPA1)
+# initialisation of joystick axes
+xaxis = analogio.AnalogIn(board.A0)
+yaxis = analogio.AnalogIn(board.A1)
 
+# initialisation of joystick related buttons
 joyStickLeft = digitalio.DigitalInOut(board.GP20)
 joyStickLeft.direction = digitalio.Direction.INPUT
 joyStickLeft.pull = digitalio.Pull.DOWN
@@ -27,6 +30,7 @@ joyStickIntegrated = digitalio.DigitalInOut(board.GP22)
 joyStickIntegrated.direction = digitalio.Direction.INPUT
 joyStickIntegrated.pull = digitalio.Pull.DOWN
 
+# initialisation of precision mouse keys
 right = digitalio.DigitalInOut(board.GP13)
 right.direction = digitalio.Direction.INPUT
 right.pull = digitalio.Pull.DOWN
@@ -51,6 +55,7 @@ moveRight = digitalio.DigitalInOut(board.GP18)
 moveRight.direction = digitalio.Direction.INPUT
 moveRight.pull = digitalio.Pull.DOWN
 
+# initialisation of macropad keys
 macro11 = digitalio.DigitalInOut(board.GP0)
 macro11.direction = digitalio.Direction.INPUT
 macro11.pull = digitalio.Pull.DOWN
@@ -99,9 +104,11 @@ macro34 = digitalio.DigitalInOut(board.GP11)
 macro34.direction = digitalio.Direction.INPUT
 macro34.pull = digitalio.Pull.DOWN
 
+# conversion function for joystick value
 def fix(value):
-    value * 10 / 65535 - 5
-
+    return value * 10 / 65535 - 5
+    
+# association table from ascii to keycodes
 keys = {
     ' ' : lambda : [keyboard.press(K.SPACE), keyboard.release(K.SPACE)],
     '!' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.ONE), keyboard.release(K.ONE), keyboard.release(K.SHIFT)],
@@ -200,6 +207,7 @@ keys = {
     '~' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.GRAVE), keyboard.release(K.GRAVE), keyboard.release(K.SHIFT)],
 }
 
+# write function for directly writing string with optional hold keys
 def write(string, hold=None):
     if hold is not None:
         for holding in hold:
@@ -213,6 +221,7 @@ def write(string, hold=None):
         for holding in hold:
             keyboard.release(holding)
 
+# click function for keycode(s) and optional hold keys
 def click(keycodes, hold=None):
     if hold is not None:
         for holding in hold:
@@ -235,11 +244,13 @@ def click(keycodes, hold=None):
 jsStep = 2          # step di movimento del joystick
 precisionStep = 4   # step di movimento del mouse di precisione
 
+# class definition for click only keys
 class Action:
     def __init__(self, device, onClick):
         self.device = device
         self.onClick = onClick
         
+# class definition for press and hold keys
 class LayerAction:
     def __init__(self, device, onPress, onRelease):
         self.device = device
@@ -247,6 +258,7 @@ class LayerAction:
         self.onRelease = onRelease
         self.active = False
 
+# macroHub main map
 map = [
     LayerAction(left, lambda : [mouse.press(mouse.LEFT_BUTTON)], lambda: [mouse.release(mouse.LEFT_BUTTON)]),
     LayerAction(right, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
@@ -289,7 +301,22 @@ if __name__ == '__main__':
                         action.value = False
                         
         x = round(fix(xaxis))
+        if x != 0:
+            
+            if x < 0 and not x % 2:
+                x += 1
+            
+            elif x > 0 and not x % 2:
+                x -= 1
+                
         y = round(fix(yaxis))
-
+        if y != 0:
+            
+            if y < 0 and not y % 2:
+                y += 1
+            
+            elif x > 0 and not y % 2:
+                y -= 1
+        
         if x or y:
             mouse.move(jsStep * x, jsStep * y)
