@@ -3,7 +3,7 @@ import usb_hid
 import digitalio
 import analogio
 from adafruit_hid.keybaord import Keyboard
-from adafruit_hid.keycode import Keycode
+from adafruit_hid.keycode import Keycode as K
 import time
 
 class LayerSwitch:
@@ -250,11 +250,11 @@ class Keyboard:
     def __init__(self, direct=True):
         self.direct = direct
         
-        self.rows = []
-        self.cols = []
+        self.rows = ()
+        self.cols = ()
         
-        self.pins = []
-        self.map = []
+        self.pins = ()
+        self.map = ()
         
         self.keyboard = Keyboard(usb_hid.devices)
         self.direction = None
@@ -278,14 +278,14 @@ class Keyboard:
             for holding in hold:
                 self.keyboard.press(holding)
                 
-         for key in keys:
+        for key in keys:
             try:
                 self.keyboard.press(key)
                 self.keyboard.release(key)
-            
+
             except:
                 pass
-        
+
         if hold is not None:
             for holding in hold:
                 self.keyboard.release(holding)
@@ -295,8 +295,8 @@ class Keyboard:
             for holding in hold:
                 self.keyboard.press(holding)
                 
-         for char in string:
-            if char in keys:
+        for char in string:
+            if char in chars:
                 char(self.keyboard)
         
         if hold is not None:
@@ -325,12 +325,12 @@ class Keyboard:
                             fnc = self.map[index] if not layer else (self.map[index])[layer]
                     
                             if fnc == lastAction and time.time() - lastTime < 0.01:
-                                contine
+                                continue
                             
                             if isinstance(fnc, str):
                                 self.write(fnc)
                             
-                            elif isisnstance(fnc, Keycode):
+                            elif isinstance(fnc, K):
                                 self.click(fnc)
                             
                             else:
@@ -351,12 +351,12 @@ class Keyboard:
                             fnc = self.map[index] if not layer else (self.map[index])[layer]
                             
                             if fnc == lastAction and time.time() - lastTime < 0.01:
-                                contine
+                                continue
                             
                             if isinstance(fnc, str):
                                 self.write(fnc)
                             
-                            elif isisnstance(fnc, Keycode):
+                            elif isinstance(fnc, K):
                                 self.click(fnc)
                             
                             else:
@@ -380,12 +380,12 @@ class Keyboard:
                             fnc = self.map[index] if not layer else (self.map[index])[layer]
                             
                             if fnc == lastAction and time.time() - lastTime < 0.01:
-                                contine
+                                continue
                             
                             if isinstance(fnc, str):
                                 self.write(fnc)
                             
-                            elif isisnstance(fnc, Keycode):
+                            elif isinstance(fnc, K):
                                 self.click(fnc)
                             
                             else:
