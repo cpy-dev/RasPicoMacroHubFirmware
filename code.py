@@ -8,6 +8,11 @@ from adafruit_hid.keyboard import Keycode as K
 
 ############# BASE OBJACTS DEFINITION ############
 # porcoddio non toccare questi codici #
+def initButton(gpio):
+    button = digitalio.DigitalInOut(gpio)
+    button.direction = digitalio.Direction.INPUT
+    button.pull = digitalio.Pull.DOWN
+    return button
 
 # mouse and keyboard instance for initialisation
 mouse = Mouse(usb_hid.devices)
@@ -18,91 +23,33 @@ xaxis = analogio.AnalogIn(board.A0)
 yaxis = analogio.AnalogIn(board.A1)
 
 # initialisation of joystick related buttons
-joyStickLeft = digitalio.DigitalInOut(board.GP20)
-joyStickLeft.direction = digitalio.Direction.INPUT
-joyStickLeft.pull = digitalio.Pull.DOWN
-
-joyStickRight = digitalio.DigitalInOut(board.GP21)
-joyStickRight.direction = digitalio.Direction.INPUT
-joyStickRight.pull = digitalio.Pull.DOWN
-
-joyStickIntegrated = digitalio.DigitalInOut(board.GP22)
-joyStickIntegrated.direction = digitalio.Direction.INPUT
-joyStickIntegrated.pull = digitalio.Pull.DOWN
+joyStickLeft = initButton(board.GP20)
+joyStickRight = initButton(board.GP21)
+joyStickIntegrated = initButton(board.GP22)
 
 # initialisation of precision mouse keys
-right = digitalio.DigitalInOut(board.GP13)
-right.direction = digitalio.Direction.INPUT
-right.pull = digitalio.Pull.DOWN
-
-left = digitalio.DigitalInOut(board.GP15)
-left.direction = digitalio.Direction.INPUT
-left.pull = digitalio.Pull.DOWN
-
-moveUp = digitalio.DigitalInOut(board.GP14)
-moveUp.direction = digitalio.Direction.INPUT
-moveUp.pull = digitalio.Pull.DOWN
-
-moveLeft = digitalio.DigitalInOut(board.GP16)
-moveLeft.direction = digitalio.Direction.INPUT
-moveLeft.pull = digitalio.Pull.DOWN
-
-moveDown = digitalio.DigitalInOut(board.GP17)
-moveDown.direction = digitalio.Direction.INPUT
-moveDown.pull = digitalio.Pull.DOWN
-
-moveRight = digitalio.DigitalInOut(board.GP18)
-moveRight.direction = digitalio.Direction.INPUT
-moveRight.pull = digitalio.Pull.DOWN
+right = initButton(board.GP13)
+left = initButton(board.GP15)
+moveUp = initButton(board.GP14)
+moveLeft = initButton(board.GP16)
+moveDown = initButton(board.GP17)
+moveRight = initButton(board.GP18)
 
 # initialisation of macropad keys
-macro11 = digitalio.DigitalInOut(board.GP0)
-macro11.direction = digitalio.Direction.INPUT
-macro11.pull = digitalio.Pull.DOWN
+macro11 = initButton(board.GP0)
+macro12 = initButton(board.GP1)
+macro13 = initButton(board.GP2)
+macro14 = initButton(board.GP3)
 
-macro12 = digitalio.DigitalInOut(board.GP1)
-macro12.direction = digitalio.Direction.INPUT
-macro12.pull = digitalio.Pull.DOWN
+macro21 = initButton(board.GP4)
+macro22 = initButton(board.GP5)
+macro23 = initButton(board.GP6)
+macro24 = initButton(board.GP7)
 
-macro13 = digitalio.DigitalInOut(board.GP2)
-macro13.direction = digitalio.Direction.INPUT
-macro13.pull = digitalio.Pull.DOWN
-
-macro14 = digitalio.DigitalInOut(board.GP3)
-macro14.direction = digitalio.Direction.INPUT
-macro14.pull = digitalio.Pull.DOWN
-
-macro21 = digitalio.DigitalInOut(board.GP4)
-macro21.direction = digitalio.Direction.INPUT
-macro21.pull = digitalio.Pull.DOWN
-
-macro22 = digitalio.DigitalInOut(board.GP5)
-macro22.direction = digitalio.Direction.INPUT
-macro22.pull = digitalio.Pull.DOWN
-
-macro23 = digitalio.DigitalInOut(board.GP6)
-macro23.direction = digitalio.Direction.INPUT
-macro23.pull = digitalio.Pull.DOWN
-
-macro24 = digitalio.DigitalInOut(board.GP7)
-macro24.direction = digitalio.Direction.INPUT
-macro24.pull = digitalio.Pull.DOWN
-
-macro31 = digitalio.DigitalInOut(board.GP8)
-macro31.direction = digitalio.Direction.INPUT
-macro31.pull = digitalio.Pull.DOWN
-
-macro32 = digitalio.DigitalInOut(board.GP9)
-macro32.direction = digitalio.Direction.INPUT
-macro32.pull = digitalio.Pull.DOWN
-
-macro33 = digitalio.DigitalInOut(board.GP10)
-macro33.direction = digitalio.Direction.INPUT
-macro33.pull = digitalio.Pull.DOWN
-
-macro34 = digitalio.DigitalInOut(board.GP11)
-macro34.direction = digitalio.Direction.INPUT
-macro34.pull = digitalio.Pull.DOWN
+macro31 = initButton(board.GP8)
+macro32 = initButton(board.GP9)
+macro33 = initButton(board.GP10)
+macro34 = initButton(board.GP11)
 
 # conversion function for joystick value
 def fix(value):
@@ -286,6 +233,7 @@ map = [
 if __name__ == '__main__':
     while True:
         for action in map:
+
             if isinstance(action, Action):
                 if action.device.value:
                     action.onPress()
@@ -301,21 +249,21 @@ if __name__ == '__main__':
                         action.value = False
                         
         x = round(fix(xaxis))
-        if x != 0:
+        if x != 0 and not x % 2:
             
-            if x < 0 and not x % 2:
+            if x < 0:
                 x += 1
             
-            elif x > 0 and not x % 2:
+            elif x > 0:
                 x -= 1
                 
         y = round(fix(yaxis))
-        if y != 0:
+        if y != 0 and not y % 2:
             
-            if y < 0 and not y % 2:
+            if y < 0:
                 y += 1
             
-            elif x > 0 and not y % 2:
+            elif x > 0:
                 y -= 1
         
         if x or y:
