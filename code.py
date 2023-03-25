@@ -5,6 +5,16 @@ import usb_hid
 from adafruit_hid.mouse import Mouse
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard import Keycode as K
+import time
+
+led = digitalio.DigitalInOut(board.LED)
+led.direction = digitalio.Direction.OUTPUT
+
+led.value = True
+time.sleep(0.1)
+led.value = False
+time.sleep(0.1)
+led.value = True
 
 ############# BASE OBJACTS DEFINITION ############
 # porcoddio non toccare questi codici #
@@ -19,8 +29,8 @@ mouse = Mouse(usb_hid.devices)
 keyboard = Keyboard(usb_hid.devices)
 
 # initialisation of joystick axes
-xaxis = analogio.AnalogIn(board.A0)
-yaxis = analogio.AnalogIn(board.A1)
+xaxis = analogio.AnalogIn(board.A1)
+yaxis = analogio.AnalogIn(board.A0)
 
 # initialisation of joystick related buttons
 joyStickLeft = initButton(board.GP20)
@@ -71,7 +81,7 @@ keys = {
     '+' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.EQUALS), keyboard.release(K.EQUALS), keyboard.release(K.SHIFT)],
     ',' : lambda : [keyboard.press(K.COMMA), keyboard.release(K.COMMA)],
     '-' : lambda : [keyboard.press(K.MINUS), keyboard.release(K.MINUS)],
-    '.' : lambda : [keyboard.press(K.DOT), keyboard.release(K.DOT)],
+    '.' : lambda : [keyboard.press(K.PERIOD), keyboard.release(K.PERIOD)],
     '/' : lambda : [keyboard.press(K.FORWARD_SLASH), keyboard.release(K.FORWARD_SLASH)],
     '0' : lambda : [keyboard.press(K.ZERO), keyboard.release(K.ZERO)],
     '1' : lambda : [keyboard.press(K.ONE), keyboard.release(K.ONE)],
@@ -117,7 +127,7 @@ keys = {
     'Y' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.Y), keyboard.release(K.Y), keyboard.release(K.SHIFT)],
     'Z' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.Z), keyboard.release(K.Z), keyboard.release(K.SHIFT)],
     '[' : lambda : [keyboard.press(K.LEFT_BRACKET), keyboard.release(K.LEFT_BRACKET)],
-    '\\' : lambda : [keyboard.press(K.BACKSLASH), keyboard.release(K.BACKSLASH)],
+    '\\': lambda : [keyboard.press(K.BACKSLASH), keyboard.release(K.BACKSLASH)],
     ']' : lambda : [keyboard.press(K.RIGHT_BRACKET), keyboard.release(K.RIGHT_BRACKET)],
     '^' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.SIX), keyboard.release(K.SIX), keyboard.release(K.SHIFT)],
     '_' : lambda : [keyboard.press(K.SHIFT), keyboard.press(K.MINUS), keyboard.release(K.MINUS), keyboard.release(K.SHIFT)],
@@ -188,8 +198,8 @@ def click(keycodes, hold=None):
 ############ CUSTOM DEFINITION ########
 # da qua si può iniziare a scrivere cagate #
 
-jsStep = 2          # step di movimento del joystick
-precisionStep = 4   # step di movimento del mouse di precisione
+jsStep = 3          # step di movimento del joystick
+precisionStep = 2   # step di movimento del mouse di precisione
 
 # class definition for click only keys
 class Action:
@@ -205,50 +215,116 @@ class LayerAction:
         self.onRelease = onRelease
         self.active = False
 
+class Layer:
+    def __init__(self, device, index):
+        self.device = device
+        self.index = index
+        self.active = False
+
 # macroHub main map
-map = [
+mouseMap = (
     LayerAction(left, lambda : [mouse.press(mouse.LEFT_BUTTON)], lambda: [mouse.release(mouse.LEFT_BUTTON)]),
     LayerAction(right, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
     Action(moveUp, lambda : [mouse.move(0, -precisionStep)]),
     Action(moveDown, lambda : [mouse.move(0, precisionStep)]),
     Action(moveLeft, lambda : [mouse.move(-precisionStep, 0)]),
     Action(moveRight, lambda : [mouse.move(precisionStep, 0)]),
-    LayerAction(joyStickLeft, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
-    LayerAction(joyStickRight, lambda : [mouse.press(mouse.MIDDLE_BUTTON)], lambda : [mouse.release(mouse.MIDDLE_BUTTON)]),
-    LayerAction(joyStickIntegrated, lambda : [mouse.press(mouse.LEFT_BUTTON)], mouse.release(mouse.LEFT_BUTTON)),
-    Action(macro11, lambda: []),
-    Action(macro12, lambda: []),
-    Action(macro13, lambda: []),
-    Action(macro14, lambda: []),
-    Action(macro21, lambda: []),
-    Action(macro22, lambda: []),
-    Action(macro23, lambda: []),
-    Action(macro24, lambda: []),
-    Action(macro31, lambda: []),
-    Action(macro32, lambda: []),
-    Action(macro33, lambda: []),
-    Action(macro34, lambda: []),
-]
+    LayerAction(joyStickLeft, lambda : [mouse.press(mouse.LEFT_BUTTON)], lambda : [mouse.release(mouse.LEFT_BUTTON)]),
+    LayerAction(joyStickRight, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
+    LayerAction(joyStickIntegrated, lambda : [mouse.press(mouse.MIDDLE_BUTTON)], lambda : [mouse.release(mouse.MIDDLE_BUTTON)]),
+)
+macroMap = (
+    (
+        Action(macro11, lambda : []),
+        Action(macro11, lambda : [])
+    ),
+    (
+        Action(macro12, lambda : []),
+        Action(macro12, lambda : [])
+    ),
+    (
+        Action(macro13, lambda : []),
+        Action(macro13, lambda : [])
+    ),
+    (
+        Action(macro14, lambda : []),
+        Action(macro14, lambda : [])
+    ),
+    
+    (
+        Action(macro21, lambda : []),
+        Action(macro21, lambda : [])
+    ),
+    (
+        Action(macro22, lambda : []),
+        Action(macro22, lambda : [])
+    ),
+    (
+        Action(macro23, lambda : []),
+        Action(macro23, lambda : [])
+    ),
+    (
+        Action(macro24, lambda : []),
+        Action(macro24, lambda : [])
+    ),
+    
+    (
+        Action(macro31, lambda : []),
+        Action(macro31, lambda : [])
+    ),
+    (
+        Action(macro32, lambda : []),
+        Action(macro32, lambda : [])
+    ),
+    (
+        Action(macro33, lambda : []),
+        Action(macro33, lambda : [])
+    ),
+    (
+        Action(macro34, lambda : []),
+        Action(macro34, lambda : [])
+    )
+)
 
 if __name__ == '__main__':
+    layer = 0
+    lastLayer = 0
     while True:
-        for action in map:
+        for action in macroMap:
+            if isinstance(action[layer], Action):
+                if action[layer].device.value:
+                    action[layer].onClick()
+                    time.sleep(0.2)
 
-            if isinstance(action, Action):
-                if action.device.value:
-                    action.onPress()
-            
             else:
-                if action.device.value and not action.value:
-                    action.onPress()
-                    action.value = True
+                if action[layer].device.value:
+                    if not action[layer].active:
+                        lastLayer = layer
+                        layer = action[layer].index
+                        action[layer].active = True
                 
                 else:
-                    if action.value:
+                    layer = lastLayer
+                    action[layer].active = False
+
+        
+        for action in mouseMap:
+            if isinstance(action, Action):
+                if action.device.value:
+                    action.onClick()
+            
+            else:
+                if action.device.value:
+                    if not action.active:
+                        action.onPress()
+                        action.active = True
+
+                else:
+                    if action.active:
                         action.onRelease()
-                        action.value = False
-                        
-        x = round(fix(xaxis))
+                        action.active = False
+        
+        x = round(fix(xaxis.value))
         if x != 0 and not x % 2:
             
             if x < 0:
@@ -257,14 +333,15 @@ if __name__ == '__main__':
             elif x > 0:
                 x -= 1
                 
-        y = round(fix(yaxis))
+        y = round(fix(yaxis.value))
         if y != 0 and not y % 2:
             
             if y < 0:
                 y += 1
             
-            elif x > 0:
+            elif y > 0:
                 y -= 1
-        
+            
         if x or y:
-            mouse.move(jsStep * x, jsStep * y)
+            mouse.move(jsStep * -x, jsStep * -y)
+            
