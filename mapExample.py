@@ -2,9 +2,13 @@ def customFunction():
   click(K.R, hold=K.WINDOWS)
   write('cmd')
   click(K.ENTER)
+  
+  
 
 macroMap = (
-    Action(macro11, lambda : [click(K.C, hold=K.CONTROL)]),
+    (
+      Action(macro11, lambda : [click(K.C, hold=K.CONTROL)]),
+    )
 
     Action(macro12, lambda : [click(K.V, hold=K.CONTROL)]),
     
@@ -14,7 +18,7 @@ macroMap = (
     
     Action(macro21, lambda : [customFunction()]),
     
-    Action(macro22, lambda : []),
+    Layer(macro22, 1),
     
     Action(macro23, lambda : []),
     
