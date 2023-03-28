@@ -167,33 +167,51 @@ keys = {
 # write function for directly writing string with optional hold keys
 def write(string, hold=None):
     if hold is not None:
-        for holding in hold:
-            keyboard.press(holding)
-
+        if isinstance(hold, tuple):
+            for holding in hold:
+                keyboard.press(holding)
+        else:
+            keyboard.press(hold)
+                          
     for char in string:
         if char in keys.keys():
             (keys[char])()
 
     if hold is not None:
-        for holding in hold:
-            keyboard.release(holding)
+        if isinstance(hold, tuple):
+            for holding in hold:
+                keyboard.release(holding)
+        else:
+            keyboard.release(hold)
 
 # click function for keycode(s) and optional hold keys
 def click(keycodes, hold=None):
     if hold is not None:
-        for holding in hold:
-            keyboard.press(holding)
-
-    for key in keycodes:
+        if isinstance(hold, tuple):
+            for holding in hold:
+                keyboard.press(holding)
+        else:
+            keyboard.press(hold)
+            
+    if isinstance(keys, tuple):
+        for key in keycodes:
+            try:
+                keyboard.press(key)
+                keyboard.release(key)
+            except: pass
+    else:
         try:
-            keyboard.press(key)
-            keyboard.release(key)
-        except:
-            pass
-
+            keyboard.press(keys)
+            keyboard.release(keys)
+        except: pass
+        
     if hold is not None:
-        for holding in hold:
-            keyboard.release(holding)
+        if isinstance(hold, tuple):
+            for holding in hold:
+                keyboard.release(holding)
+        else:
+            keyboard.release(hold)
+
 
 ############ CUSTOM DEFINITION ########
 # da qua si può iniziare a scrivere cagate #
@@ -221,7 +239,7 @@ class Layer:
         self.index = index
         self.active = False
 
-# macroHub main map
+# mouse map
 mouseMap = (
     LayerAction(left, lambda : [mouse.press(mouse.LEFT_BUTTON)], lambda: [mouse.release(mouse.LEFT_BUTTON)]),
     LayerAction(right, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
@@ -233,57 +251,32 @@ mouseMap = (
     LayerAction(joyStickRight, lambda : [mouse.press(mouse.RIGHT_BUTTON)], lambda : [mouse.release(mouse.RIGHT_BUTTON)]),
     LayerAction(joyStickIntegrated, lambda : [mouse.press(mouse.MIDDLE_BUTTON)], lambda : [mouse.release(mouse.MIDDLE_BUTTON)]),
 )
+
+
 macroMap = (
-    (
-        Action(macro11, lambda : []),
-        Action(macro11, lambda : [])
-    ),
-    (
-        Action(macro12, lambda : []),
-        Action(macro12, lambda : [])
-    ),
-    (
-        Action(macro13, lambda : []),
-        Action(macro13, lambda : [])
-    ),
-    (
-        Action(macro14, lambda : []),
-        Action(macro14, lambda : [])
-    ),
+    Action(macro11, lambda : []),
+
+    Action(macro12, lambda : []),
     
-    (
-        Action(macro21, lambda : []),
-        Action(macro21, lambda : [])
-    ),
-    (
-        Action(macro22, lambda : []),
-        Action(macro22, lambda : [])
-    ),
-    (
-        Action(macro23, lambda : []),
-        Action(macro23, lambda : [])
-    ),
-    (
-        Action(macro24, lambda : []),
-        Action(macro24, lambda : [])
-    ),
+    Action(macro13, lambda : []),
     
-    (
-        Action(macro31, lambda : []),
-        Action(macro31, lambda : [])
-    ),
-    (
-        Action(macro32, lambda : []),
-        Action(macro32, lambda : [])
-    ),
-    (
-        Action(macro33, lambda : []),
-        Action(macro33, lambda : [])
-    ),
-    (
-        Action(macro34, lambda : []),
-        Action(macro34, lambda : [])
-    )
+    Action(macro14, lambda : []),
+    
+    Action(macro21, lambda : []),
+    
+    Action(macro22, lambda : []),
+    
+    Action(macro23, lambda : []),
+    
+    Action(macro24, lambda : []),
+    
+    Action(macro31, lambda : []),
+    
+    Action(macro32, lambda : []),
+    
+    Action(macro33, lambda : []),
+    
+    Action(macro34, lambda : [])
 )
 
 if __name__ == '__main__':
